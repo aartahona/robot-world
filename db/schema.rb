@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2020_11_11_173730) do
   end
 
   create_table "cars", force: :cascade do |t|
-    t.string "stage"
+    t.string "status"
     t.boolean "completed"
     t.bigint "car_model_id", null: false
     t.datetime "created_at", precision: 6, null: false
