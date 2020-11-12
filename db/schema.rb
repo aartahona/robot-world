@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_12_135536) do
+ActiveRecord::Schema.define(version: 2020_11_12_144105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,17 @@ ActiveRecord::Schema.define(version: 2020_11_12_135536) do
     t.index ["car_id"], name: "index_factories_on_car_id"
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.integer "buyer_dni"
+    t.string "buyer_name"
+    t.string "status"
+    t.decimal "final_price"
+    t.bigint "car_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["car_id"], name: "index_orders_on_car_id"
+  end
+
   create_table "parts", force: :cascade do |t|
     t.string "name"
     t.boolean "defective"
@@ -50,7 +61,16 @@ ActiveRecord::Schema.define(version: 2020_11_12_135536) do
     t.index ["car_id"], name: "index_parts_on_car_id"
   end
 
+  create_table "stores", force: :cascade do |t|
+    t.bigint "car_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["car_id"], name: "index_stores_on_car_id"
+  end
+
   add_foreign_key "cars", "car_models"
   add_foreign_key "factories", "cars"
+  add_foreign_key "orders", "cars"
   add_foreign_key "parts", "cars"
+  add_foreign_key "stores", "cars"
 end
