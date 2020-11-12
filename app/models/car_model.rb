@@ -4,4 +4,17 @@ class CarModel < ApplicationRecord
     validates :stock, presence: true, numericality: { only_integer: true, greater_than_or_equal: 0 }
 
     has_many :cars
+
+    scope :with_stock, -> { where("stock > ?", 0) }
+
+#Methods to increase and decrease the stock of a model based of an amount
+    def increase_stock(amount)
+        self.stock+=amount
+        self.save
+    end
+
+    def decrease_stock(amount)
+        self.stock-=amount
+        self.save
+    end
 end

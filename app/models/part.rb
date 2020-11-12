@@ -7,7 +7,6 @@ class Part < ApplicationRecord
   belongs_to :car
 
 #Validates if the car already includes the part limited quantity
-
   def  part_quantities
     case self.name
     when "wheel" &&
