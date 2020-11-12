@@ -1,10 +1,11 @@
 class Part < ApplicationRecord
   TYPES = ["wheel", "chassis", "laser", "computer", "engine", "seat"].freeze
 
+  belongs_to :car
+
   validates :name, inclusion: { within: TYPES }
   validate :name, :part_quantities, on: :create
-
-  belongs_to :car
+  
 
 #Validates if the car already includes the part limited quantity
   def  part_quantities

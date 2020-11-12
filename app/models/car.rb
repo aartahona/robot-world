@@ -5,6 +5,8 @@ class Car < ApplicationRecord
   validates :car_model, presence: true
   validate :car_model, :car_model_stock, on: :create
 
+  scope :completed_cars, -> { where("completed = ?", true) }
+
 #validate if there is a stock for the model
   def car_model_stock
       errors.add(:car_model, "There is no stock of this model") if CarModel.find_by( id: self.car_model_id).stock <= 0
