@@ -10,8 +10,8 @@ class Part < ApplicationRecord
 
   def  part_quantities
     case self.name
-    when "wheel"
-      if found_all_parts_in_car(self.car_id, self.name, 2) 
+    when "wheel" &&
+      if found_all_parts_in_car(self.car_id, self.name, 4) 
         errors.add(:car_id, "This car already includes all 4 wheels")
       end
     when "chassis"
@@ -42,7 +42,7 @@ private
   def found_part_in_car(car_id, part_name)
     Part.find_by( car_id: car_id, name: part_name)
   end
-
+# Find if the limit of parts already exists in the Car
   def found_all_parts_in_car(car_id, part_name, limit)
     Part.where( car_id: car_id, name: part_name).count == limit
   end
