@@ -4,8 +4,15 @@ class Store < ApplicationRecord
   validates :car, presence: true, uniqueness: true
   validate :car_id, :car_completed, on: :create
 
-  #validate Car is completed
-  def car_completed
-    errors.add(:car_id, "This car is not completed") if Car.find_by( id: self.car_id).completed != true
+
+  def self.get_store_cars
+    cars =[]
+
+    self.all.each do |car|
+      car = Car.find_by(id: car.car_id )
+      cars << car
+    end
+
+    return cars
   end
 end

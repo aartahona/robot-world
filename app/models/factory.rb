@@ -1,15 +1,24 @@
 class Factory < ApplicationRecord
-  DEFECTIVE_PROBABILITY = 10.freeze
+  DEFECTIVE_PROBABILITY = 50.freeze
   TYPES = ["wheel", "chassis", "laser", "computer", "engine", "seat"].freeze
 
   belongs_to :car
   validates :car, presence: true, uniqueness: true
 
+  #The main method of this class. Starts to produce a new random car
+  def self.produce_random_car
+    car = create_random_empty_car()
+    basic_structure(car)
+    electronic_devices(car)
+    painting_final_details(car)
+    set_car_as_completed(car)
+    return car
+  end
     
   #Get an array of the cars stored in the warehouse
   def self.get_warehouse_cars
     cars =[]
-
+    
     self.all.each do |car|
       car = Car.find_by(id: car.car_id )
       cars << car
@@ -71,13 +80,7 @@ class Factory < ApplicationRecord
     Factory.find_by(car_id: 29).destroy
   end
 
-  def self.produce_car
-    car = create_random_empty_car()
-    basic_structure(car)
-    electronic_devices(car)
-    painting_final_details(car)
-    set_car_as_completed(car)
-  end
+  
 
   #Adds the wheels and the engine to an empty car
   def self.basic_structure(car)
