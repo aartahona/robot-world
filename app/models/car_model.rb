@@ -17,4 +17,11 @@ class CarModel < ApplicationRecord
         self.stock-=amount
         self.save
     end
+
+#Get a random car model
+    def self.get_random_car_model
+        random = CarModel.all.sample
+        return random
+    end
+
 end

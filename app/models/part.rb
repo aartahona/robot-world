@@ -46,4 +46,6 @@ private
   def found_all_parts_in_car(car_id, part_name, limit)
     Part.where( car_id: car_id, name: part_name).count == limit
   end
+
+
 end
