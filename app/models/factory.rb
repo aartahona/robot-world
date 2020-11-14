@@ -5,15 +5,6 @@ class Factory < ApplicationRecord
   belongs_to :car
   validates :car, presence: true, uniqueness: true
 
-  #The main method of this class. Starts to produce a new random car
-  def self.produce_random_car
-    car = create_random_empty_car()
-    basic_structure(car)
-    electronic_devices(car)
-    painting_final_details(car)
-    set_car_as_completed(car)
-    return car
-  end
     
   #Get an array of the cars stored in the warehouse
   def self.get_warehouse_cars
@@ -23,10 +14,10 @@ class Factory < ApplicationRecord
       car = Car.find_by(id: car.car_id )
       cars << car
     end
-
     return cars
   end
 
+  #TODO move logic to car model
   #Get an array of the defective Cars
   def self.defective_cars
     defective_cars = []
@@ -46,7 +37,6 @@ class Factory < ApplicationRecord
       car = Car.find_by(id: car.car_id )
       good_cars << car if car.defective_parts.empty? 
     end
-
     return good_cars
   end
 
@@ -79,8 +69,6 @@ class Factory < ApplicationRecord
   def self.remove_car_from_warehouse(car)
     Factory.find_by(car_id: 29).destroy
   end
-
-  
 
   #Adds the wheels and the engine to an empty car
   def self.basic_structure(car)
@@ -125,6 +113,24 @@ class Factory < ApplicationRecord
     end
   end
 
+  #Sets the car as ready to sell
+  def self.set_car_as_ready_to_sell(car)
+    if car.completed && car.status == "finished"
+      car.status = "ready_to_sell"
+      car.save
+    end
+  end
+
+  #Sets the car as defective
+  def self.set_car_as_defective(car)
+    if car.completed && car.status == "finished"
+      car.status = "defective"
+      car.save
+    end
+  end
+
+  #Creates a new car without structue
+  #Checks wich models have stocks to be assigned to the new car
   def self.create_random_empty_car
     model = CarModel.all.with_stock.sample
     Car.create_empty_car(model.id)

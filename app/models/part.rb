@@ -5,6 +5,8 @@ class Part < ApplicationRecord
 
   validates :name, inclusion: { within: TYPES }
   validate :name, :part_quantities, on: :create
+
+  scope :defectives, -> { where("defective = ?", true) }
   
 
 #Validates if the car already includes the part limited quantity
