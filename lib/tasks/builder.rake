@@ -1,11 +1,3 @@
-require "#{Rails.root}/app/models/application_record.rb"
-require "#{Rails.root}/app/models/car.rb"
-require "#{Rails.root}/app/models/car_model.rb"
-require "#{Rails.root}/app/models/factory.rb"
-require "#{Rails.root}/app/models/part.rb"
-
-require 'rake'
-
 logger = Logger.new("#{Rails.root}/log/builder.log")
 
 namespace :builder do
@@ -37,6 +29,8 @@ namespace :builder do
     task destroy_factory: [:environment] do
         Part.destroy_all
         Factory.destroy_all
+        Store.destroy_all
+        Order.destroy_all
         Car.destroy_all
     end
 

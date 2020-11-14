@@ -11,4 +11,8 @@ class Order < ApplicationRecord
     errors.add(:car_id, "This car is not completed") if Car.find_by( id: self.car_id).completed != true
   end
 
+  def self.place_an_order(car, buyer_dni, buyer_name, order_status, price)
+    Order.create(buyer_dni: buyer_dni, buyer_name: buyer_name, car_id: car.id, status: order_status, final_price: price)
+  end
+
 end

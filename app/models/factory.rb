@@ -67,7 +67,7 @@ class Factory < ApplicationRecord
 
   #Removes a car from the warehouse
   def self.remove_car_from_warehouse(car)
-    Factory.find_by(car_id: 29).destroy
+    Factory.find_by(car_id: car.id).destroy
   end
 
   #Adds the wheels and the engine to an empty car

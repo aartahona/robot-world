@@ -1,12 +1,4 @@
-require "#{Rails.root}/app/models/application_record.rb"
-require "#{Rails.root}/app/models/car.rb"
-require "#{Rails.root}/app/models/car_model.rb"
-require "#{Rails.root}/app/models/factory.rb"
-require "#{Rails.root}/app/models/part.rb"
-
-require 'rake'
-
-$logger = Logger.new("#{Rails.root}/log/guard.log")
+$guard_logger = Logger.new("#{Rails.root}/log/guard.log")
 
 namespace :guard do
 
@@ -20,15 +12,25 @@ namespace :guard do
         end
     end
 
+    desc "Transfer the ready to sell cars from the warehouse to the store"
+    task transfer_cars: [:environment] do
+        Factory.get_warehouse_cars.each do |car|
+            if car.status == 'ready_to_sell'
+                Store.add_car_to_store(car)
+                Factory.remove_car_from_warehouse(car)
+            end
+        end
+    end
+
     def log_defective_car(car)
         Factory.set_car_as_defective(car)
 
         #Log the defective car
-        $logger.info ("Car_id: #{car.id} | Model: #{car.car_model.name} | Year: #{car.car_model.year}")
+        $guard_logger.info ("Car_id: #{car.id} | Model: #{car.car_model.name} | Year: #{car.car_model.year}")
 
         #Log the defective parts of the car as well
         car.defective_parts.each do |part|
-            $logger.warn ("Part_ID: #{part.id} | Type: #{part.name} | Defective: #{part.defective} | Car_ID: #{part.car_id}")
+            $guard_logger.warn ("Part_ID: #{part.id} | Type: #{part.name} | Defective: #{part.defective} | Car_ID: #{part.car_id}")
         end
     end
 end
