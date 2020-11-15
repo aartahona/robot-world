@@ -27,6 +27,7 @@ namespace :builder do
 
     desc "Destroy factory. Deletes Cars from warehouse and destroy all cars with their parts as well"
     task destroy_factory: [:environment] do
+        ExchangeOrder.destroy_all
         Part.destroy_all
         Factory.destroy_all
         Store.destroy_all

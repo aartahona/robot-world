@@ -33,25 +33,7 @@ def self.create_empty_car(model_id)
   return car
 end
 
-#TODO clean commented code
-#Creates a new car with random model
-#Used for debugging
-#  def self.create_random_car
-#    random_car = Car.new
-#    random_car.completed = false
-#    random_car.car_model_id = CarModel.with_stock.sample.id
-#    
-#    begin
-#        if(!random_car.save)
-#            puts "An error has ocurred creating the car"
-#            puts self.errors.full_messages
-#        end
-#    rescue StandardError => e
-#        puts e
-#    end
-#  end
-
-  def delete_all_parts
+def delete_all_parts
     self.parts.each do |part|
       part.destroy
     end

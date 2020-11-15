@@ -10,7 +10,11 @@ every 1.minute do
 end
 
 every 1.minute do
-    rake "buyer:buy_random_car_10times"
+    rake "buyer:buy_random_car_10tops"
+end
+
+every 5.minute do
+    rake "exchanger:verify_exchanges"
 end
 
 every 30.minute do
