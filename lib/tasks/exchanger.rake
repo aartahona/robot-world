@@ -80,9 +80,9 @@ namespace :exchanger do
     def exchange_order(order, new_model_id)
         puts "#{order} | #{new_model_id}"
         new_car = Store.get_cars_by_model_id(new_model_id).sample
-        puts "#{new_car.car_model.name} | #{new_car.car_model.car_model_id}"
+        puts "#{new_car.car_model.name} | #{new_car.car_model.id}"
         replaced_car = order.car
-        puts "#{replaced_car.car_model.name} | #{replaced_car.car_model.car_model_id}"
+        puts "#{replaced_car.car_model.name} | #{replaced_car.car_model.id}"
         order.exchange_car(new_car)
         Store.set_car_as_sold(new_car)
         Store.remove_car_from_store(new_car)

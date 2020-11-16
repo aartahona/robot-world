@@ -1,4 +1,5 @@
 $guard_logger = Logger.new("#{Rails.root}/log/guard.log")
+require 'httparty'
 
 namespace :guard do
 
@@ -22,6 +23,11 @@ namespace :guard do
         end
     end
 
+    desc "Test log to slack"
+    task to_slack: [:environment] do
+        log_defective_car_to_Slack(Car.last)
+    end
+
     def log_defective_car(car)
         Factory.set_car_as_defective(car)
 
@@ -32,5 +38,30 @@ namespace :guard do
         car.defective_parts.each do |part|
             $guard_logger.warn ("Part_ID: #{part.id} | Type: #{part.name} | Defective: #{part.defective} | Car_ID: #{part.car_id}")
         end
+        log_defective_car_to_Slack()
+    end
+
+    def log_defective_car_to_Slack(car)
+        message = "Car: #{car.id} is defective."
+        
+        car.defective_parts.each do |part|
+            message += "\nPart_ID: #{part.id} | Type: #{part.name} | Defective"
+        end
+        puts message
+        
+        # response = HTTParty.put("https://jsonplaceholder.typicode.com/posts/1", body: {
+        #     id: 1,
+        #     title: 'foo',
+        #     body: 'bar',
+        #     userId: 1,
+        # })
+        # url = "https://hooks.slack.com/services/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"
+        # response = HTTParty.post(
+        #     url,
+        #     body: { "text" => message }.to_json,
+        #     headers: { 'Content-Type' => 'application/json' }
+        # )
+        # puts response.code
+        # puts response.body
     end
 end
