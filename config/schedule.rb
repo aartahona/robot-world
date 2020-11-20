@@ -22,5 +22,6 @@ every 30.minute do
 end
 
 every 1.day, at: '00:00 am' do
-    rake "builder:destroy_factory"
+    rake "initializer:destroy_factory"
+    rake "initializer:initialize_factory"
 end

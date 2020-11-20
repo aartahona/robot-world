@@ -33,14 +33,13 @@ namespace :buyer do
         $buyer_logger.info ("Attempting to buy #{random} cars")
         random.times {
             #Gets a random id and checks if there is stock in the store.
-            random_id = random_model_id
+            random_id = CarModel.ids.sample
             Store.get_stock_by_model_id(random_id) > 0 ? buy_random_car(random_id) : log_failed_buy(random_id)
         }        
     end
 
     #Logs the failed attempt to buy
     def log_failed_buy(random_id)
-
         model = CarModel.find_by(id: random_id).name
         #Log the model name without stock
         $buyer_logger.warn ("There is no more stock in the store of model: #{model}")
@@ -55,10 +54,7 @@ namespace :buyer do
         Store.remove_car_from_store(car)
     end
 
-    #Generates a random model id
-    def self.random_model_id
-        # rand(CarModel.all.count) + 1
-        rand(1..CarModel.all.count)
+    def check_factory_cars
     end
 
 end
