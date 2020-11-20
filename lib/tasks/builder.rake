@@ -25,16 +25,6 @@ namespace :builder do
         }
     end
 
-    desc "Destroy factory. Deletes Cars from warehouse and destroy all cars with their parts as well"
-    task destroy_factory: [:environment] do
-        ExchangeOrder.destroy_all
-        Part.destroy_all
-        Factory.destroy_all
-        Store.destroy_all
-        Order.destroy_all
-        Car.destroy_all
-    end
-
     #Acts as the ensambler of the factory
     #Calls each stage line,
     def produce_random_car
