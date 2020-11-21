@@ -19,6 +19,8 @@ end
 
 every 30.minute do
     rake "guard:transfer_cars"
+    #Using the second version of transfer cars, reviewing the pending orders
+    # rake "guard:transfer_cars_pending_orders"
 end
 
 every 1.day, at: '00:00 am' do

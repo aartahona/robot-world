@@ -26,4 +26,13 @@ class Order < ApplicationRecord
     end
   end
 
+  def set_as_completed
+    self.status = "completed"
+    self.save
+  end
+
+  def set_as_cancelled
+    self.status = "cancelled"
+    self.save
+  end
 end
