@@ -12,14 +12,8 @@ class Api::V1::FactoriesController < ApplicationController
     def show
         available_cars = Factory.good_condition_cars
         cars = available_cars.select{|car| car.car_model_id == params[:id].to_i}
-        puts cars
         @car_found = cars.sample
-        # available_cars.each do |car|
-        #     if (car.car_model_id == params[:id].to_i)
-        #         @car_found = car
-        #         break
-        #     end
-        # end
+        
         if @car_found == nil
            render json:@car_found, status: 404
         else

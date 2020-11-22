@@ -56,3 +56,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'hirb'
 gem 'httparty'
 gem 'whenever', require: false
+gem "rspec-rails"

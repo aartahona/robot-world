@@ -38,8 +38,4 @@ def delete_all_parts
       part.destroy
     end
   end
-
-  def get_parts
-    
-  end
 end
