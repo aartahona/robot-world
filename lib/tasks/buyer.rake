@@ -88,7 +88,7 @@ namespace :buyer do
             $buyer_logger.info ("Creating Pending Order: Car_id: #{car.id} | Model: #{car.car_model.name} | Year: #{car.car_model.year}")
         else
             $buyer_logger.info ("Car already reserved: Car_id: #{car_id}")
-        end    
+        end
     end
 
     
