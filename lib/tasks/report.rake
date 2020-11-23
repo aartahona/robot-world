@@ -13,10 +13,6 @@ namespace :report do
 
         $report_logger.info ("Number of cars sold today: #{daily_orders.count}")
         $report_logger.info ("Daily Revenue: #{revenue}")
-        $report_logger.info ("Average Order Value from today: #{(daily_orders.sum(:final_price)/daily_orders.count).round(2)}") if daily_orders.count > 0
-
-
-
-        
+        $report_logger.info ("Average Order Value from today: #{(daily_orders.sum(:final_price)/daily_orders.count).round(2)}") if daily_orders.count > 0    
     end
 end

@@ -5,7 +5,6 @@ class Api::V1::FactoriesController < ApplicationController
         render json:@ready_to_sell_cars
     end
 
-
     #The api is going to return a random car from the warehouse, that matches the model id
     #There is a probability that the provided car is already reserved by other pending order
     #TODO improve api so it returns only the non-reserved cars 

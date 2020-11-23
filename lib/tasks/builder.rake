@@ -29,10 +29,12 @@ namespace :builder do
     #Calls each stage line,
     def produce_random_car
         car = Factory.create_random_empty_car()
+        
         Factory.basic_structure(car)
         Factory.electronic_devices(car)
         Factory.painting_final_details(car)
         Factory.set_car_as_completed(car)
+
         return car
     end
 

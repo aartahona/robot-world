@@ -10,6 +10,7 @@ namespace :buyer do
         Store.get_stock_by_model_id(random_id) > 0 ? buy_random_car(random_id) : log_failed_buy(random_id)
     end
 
+    #For debugging purposes
     desc "Attempt to buy 10 random cars"
     task buy_random_car_10times: [:environment] do
 
@@ -20,6 +21,7 @@ namespace :buyer do
         }        
     end
 
+    #For debugging purposes
     desc "Attempt to buy 50 random cars"
     task buy_random_car_50times: [:environment] do
 
@@ -77,7 +79,6 @@ namespace :buyer do
         $buyer_logger.info ("Buying: Car_id: #{car.id} | Model: #{car.car_model.name} | Year: #{car.car_model.year}")
         Order.place_an_order(car, 95575523, "ROBOT Alberto Artahona", "completed", car.car_model.price, 2)
         Store.set_car_as_sold(car)
-        #Store.find_by(car_id: car.id).destroy
         Store.remove_car_from_store(car)
     end
 
@@ -90,24 +91,4 @@ namespace :buyer do
             $buyer_logger.info ("Car already reserved: Car_id: #{car_id}")
         end
     end
-
-    
-    # desc "TEST API checks factory cars"
-    # task check_factory_cars: [:environment] do
-    #     # check_factory_cars()
-    #     find_model_in_factory(30)
-    # end
-
-    # def find_model_in_factory(id)
-    #     response = HTTParty.get("http://localhost:3000/api/v1/factories/#{id}")
-    #     car = JSON.parse(response.body, object_class: OpenStruct)
-    #     # if response.code == 200
-    #     #     car_found = JSON.parse(response.body, object_class: OpenStruct)
-    #     #     create_pending_order(car_found.id)
-    #     # end
-    #     # puts car.car_model_id.price
-    #     puts response.code
-    #     puts response.body
-    # end
-
 end

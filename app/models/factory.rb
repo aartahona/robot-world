@@ -17,7 +17,6 @@ class Factory < ApplicationRecord
     return cars
   end
 
-  #TODO move logic to car model
   #Get an array of the defective Cars
   def self.defective_cars
     defective_cars = []

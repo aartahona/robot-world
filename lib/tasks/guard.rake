@@ -25,6 +25,7 @@ namespace :guard do
 
     desc "Transfer the ready to sell cars from the warehouse to the store, but verifying first if there are pending orders"
     task transfer_cars_pending_orders: [:environment] do
+
         #Process the pending orders
         pending_orders = Order.all.where(status: "pending")
         pending_orders.each do |order|
@@ -32,6 +33,7 @@ namespace :guard do
                 order.car.status = "sold"
                 order.car.save
                 order.set_as_completed
+                
                 Factory.remove_car_from_warehouse(order.car)
             else
                 order.set_as_cancelled
@@ -46,32 +48,6 @@ namespace :guard do
             end
         end
     end
-
-    # desc "Transfer the ready to sell cars from the warehouse to the store, but verifying first if there are pending orders"
-    # task transfer_cars_pending_orders: [:environment] do
-    #     warehouse_cars = Factory.get_warehouse_cars
-
-    #     #Verify first the pending orders
-    #     pending_orders = Order.all.where(status: "pending")
-
-    #     #Transfer the rest of the cars
-    #     warehouse_cars.each do |car|
-    #         if car.status == 'ready_to_sell'
-    #             if pending_orders.any? && !pending_orders.find_by(car_id: car.id).nil?
-    #                 buy_car(car.id)
-    #                 pending_orders.find_by(car_id: car.id).set_as_completed
-    #             else
-    #                 Store.add_car_to_store(car)
-    #                 Factory.remove_car_from_warehouse(car)
-    #             end
-    #         end
-    #     end
-    # end
-
-    # desc "Test log to slack"
-    # task to_slack: [:environment] do
-    #     test_slack()
-    # end
 
     def log_defective_car(car)
         Factory.set_car_as_defective(car)
@@ -93,9 +69,6 @@ namespace :guard do
             headers: { 'Content-Type' => 'application/json' }
         )
         $guard_logger.error ("Unable to post defective cars on slack") if response.code != 200 #If there is some kind of error posting to the Slack API
-        # puts response.code
-        # puts response.body
-        # puts message
     end
 
     def buy_car(random_id)
@@ -105,14 +78,3 @@ namespace :guard do
         Store.set_car_as_sold(car)
     end
 end
-
-# def test_slack
-#     url = "https://hooks.slack.com/services/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"
-#     response = HTTParty.post(
-#         url,
-#         body: { "text" => "Hola Mundo Test" }.to_json,
-#         headers: { 'Content-Type' => 'application/json' }
-#     )
-#     puts response.code
-#     puts response.body
-# end

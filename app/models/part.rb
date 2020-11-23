@@ -12,26 +12,32 @@ class Part < ApplicationRecord
 #Validates if the car already includes the part limited quantity
   def  part_quantities
     case self.name
+
     when "wheel" &&
       if found_all_parts_in_car(self.car_id, self.name, 4) 
         errors.add(:car_id, "This car already includes all 4 wheels")
       end
+
     when "chassis"
       if found_part_in_car(self.car_id, self.name) 
         errors.add(:car_id, "This car already includes a chassis")
       end
+
     when "laser"
       if found_part_in_car(self.car_id, self.name) 
         errors.add(:car_id, "This car already includes a laser")
       end
+
     when "computer"
       if found_part_in_car(self.car_id, self.name)
          errors.add(:car_id, "This car already includes a computer")
       end
+
     when "engine"
       if found_part_in_car(self.car_id, self.name) 
         errors.add(:car_id, "This car already includes an engine")
       end
+
     when "seat"
       if found_all_parts_in_car(self.car_id, self.name, 2) 
         errors.add(:car_id, "This car already includes both seats")
@@ -48,6 +54,5 @@ private
   def found_all_parts_in_car(car_id, part_name, limit)
     Part.where( car_id: car_id, name: part_name).count == limit
   end
-
 
 end

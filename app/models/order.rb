@@ -17,6 +17,7 @@ class Order < ApplicationRecord
     Order.create(buyer_dni: buyer_dni, buyer_name: buyer_name, car_id: car.id, status: order_status, final_price: price, returns_limit: returns)
   end
 
+  #Changes the existing car of the order with the new car
   def exchange_car(car)
     if self.car.car_model.name != car.car_model.name
       self.car_id = car.id

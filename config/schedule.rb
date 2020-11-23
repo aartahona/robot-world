@@ -12,7 +12,7 @@ end
 every 1.minute do
     rake "buyer:buy_random_car_10tops"
     #Using second version of the buyer to check first if there is stock in the factory, when the store is out of stock.
-    #rake "buy_random_car_10tops_verify_factory"
+    #rake "buyer:buy_random_car_10tops_verify_factory"
 
 end
 
