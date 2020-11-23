@@ -17,6 +17,7 @@
 # Robots
 I set up the robots as rake tasks that can be scheduled as cron jobs. Each robot has a set of tasks that can be scheduled to be run.  
 I used the 'whenever' gem library to help me define cron jobs in Ruby. More info here: https://github.com/javan/whenever  
+
 All robots schedules are configured in the ```'config/schedule.rb'``` file.  
 
 To set up the cron jobs, you need to run the following command: 
