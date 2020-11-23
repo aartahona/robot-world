@@ -1,65 +1,106 @@
-## Foreword
-First of all, thanks for taking the time to take this tech challenge. We really appreciate it. And now, are you ready to rumble? :)
+# Data Structure
+- **Car Model:** This is the "template" for the cars. It provides the prices and the name of the models. Prices are determined by each model and there is a stock for each model that the factory can produce. This table must be filled at the start.
 
-## Robot World
+- **Parts:** Each part references to a car and there is a fixed set of parts that can be created. There is a set probability that a part can be created as defective.
 
-It's the year 2020, the developers are part of the past. You are probably the last dev on the earth and you are pretty busy, so you decide the best is the robots can handle all the work instead of you.
+- **Cars:** The base model of the project. Each car references a model to know its price. This table persists at all times, starting from the production till an order is placed. We can track the status of each car, so we know which stage the car is.
 
-## Robot builder and initial data structure.
-This robot will be the one in charge to generate the data that will feed the whole process.
+- **Factory:** This table is only a list of completed cars. The model also has the assembly lines that a car has to pass to be completed.
 
- + Model a Car factory and the cars. The factory will have 3 assembly lines: “Basic structure”, “Electronic devices” and “Painting and final details”. When the car passes throughout the 3 lines we can consider it as complete.
- + The cars have simple parts: 4 wheels, 1 chassis, 1 laser, 1 computer, 1 engine, price, cost price and 2 seats. We should know the car year and the model name. The car computer should know if the car has any defect and where it is (which part). We should know the car model stock.
- + We have a warehouse when the cars are parked after completion. We should know how many cars by the model we have in the warehouse. We call this factory stock.
- + The cars should answer if it's a complete car or not and its current assembly stage.
- + Create a robot builder, once you create the data structure, you have to create a process (our robot builder) which will generate random cars each minute, it will be the one assigning the model names, the year, the parts, the assembly stage, the defects. 
-Each minute 10 new cars are created, every day the robot builder process start over from scratch wiping all the cars at the end of the day. Even though the generated cars are randomly generated, we have only 10 different car models. 
+- **Store:** Similar to the factory, the store is also just a list of cars. It references the 'ready to sell' cars.
+
+- **Orders:** Very similar to Factory and Store. It is basically a list of cars, but references the 'sold' or soon to be sold cars. The price of the order can be different to the price of the model, for flexibility to set discounts if desired. Each order registers the DNI and name of the buyer. An order can have a status of pending when the car is reserved but not yet sold.
+
+- **Exchange Orders:** This table is used for the orders that need to be exchanged by other car. It is basically a list of orders with the model of the car to be exchanged.
 
 
-## Guard robot
--  This robot will be looking for any kind of defect, it will send an alert when the defect is detected and it will inform the details using slack.
-Here you go, a curl example (of course you’ll do this using Ruby rather than CURL)
+# Robots
+I set up the robots as rake tasks that can be scheduled as cron jobs. Each robot has a set of tasks that can be scheduled to be run. I used the 'whenever' gem library to help me define cron jobs in Ruby. More info here: https://github.com/javan/whenever
+All robots schedules are configured in the “config/schedule.rb” file.
+To set up the cron jobs, you need to run the following command: whenever --update-crontab --set environment='development' or just whenever --update-crontab
+This will wirte the jobs in the system crontab file.
 
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/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
-
-You can check the details here:
-https://api.slack.com/docs/messages
-Note: The URL =>  https://hooks.slack.com/services/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 is a real URL, it will post the message you will format to the person who is reviewing the challenge.
-
-
-## About the stock
-The factory stock is different from the store stock. Every 30 minutes the guard robot beside of watching our defects will transfer the stock from factory stock to store stock in order to be sold (it will transfer only the non-defective cars stock). 
+## Builder Robot
+This robot can build a single random car from the available models that have stock.
+It will also pass the car through the assembly lines of the factory until it is finished.
+Then it will mark the car as completed and add it to the warehouse stock (add it to the Factory table).
+It will log the cars produced in the 'log/builder.log' file
 
 
-## Robot buyer, order model and store stock
+## Guard Robot
+There are two main tasks that this robot is in charge of:
+- **Verify Cars:** It will look the cars that are available in the warehouse. If the car has any defective parts, it will log it in the 'log/guard.log' file. Otherwise, the car will be marked as 'ready to sell'.
+- **Transfer Cars:** It will get the ready to sell cars out from the warehouse stock and transfer them to the Store.
 
-Once the cars are ready to be sold, the cars are taken to another place, far from the factory and the factory warehouse. Here is where the Robot buyer comes on the scene, this process will buy a random number of cars always < 10 units each X amount of time (it can buy 10 cars/min top). When the robot buyer purchases a car an order will be placed. The robot only can buy 1 car at a time, so each order will have only 1 item. The stock will be decreased when the order is placed. Well, there’s a detail here, the stock we decreased is the store stock. If when the robot buyer wants to purchase a car model and there’s no stock, it won’t be able to buy it and that event will have to be logged.
+The defective cars will also be posted to Slack. 
+I used the 'httparty' gem library because it seemed easier to use than the built-in http client from Ruby. More info here: https://github.com/jnunemaker/httparty
+If there is some error with the Slack api, it will log that the defective car wasn't able to be posted.
 
-
-## The problem.
-You know the robot buyer knows the car models he is able to buy, we want to optimize the sales, as we have lag between the factory stock and the store stock, it may happen that we don’t have stock at the store stock but we actually have brand new cars ready to be sold in the factory stock. How can we optimize the stock management? (sadly we can’t centralize the stock)
-
-## The other problem.
-After you finish to code this challenge, imagine you'll receive a text message from the robot buyer, it says that several orders need to be changed because they want to change the cars models.
-First, you receive an order_id and the car model, but an hour later you'll start to receive several changes of this kind request per hour.
-What is your proposal to solve this need? Also please implement the solution.
-
-## A plus.
-Making the robot execs happy would be a good idea, it would be great to pull the daily revenue, how many cars we sell, average order value on a daily basis. 
-
-## Notes and considerations
-+ This is a pretty open challenge, there are several ways to solve it, the idea behind this you show us how you think, how you solve the problems. So express yourself, apply the good practices and techniques you learned but always with the right balance, keep it simple.
-+ Tests are important, we use Rspec, but mini test or another framework will do the job.
-+ Don't hesitate to ask, we are here to help.
-+ We use Rails and Postgres. The Postgres DB is mandatory for this challenge, but as this challenge doesn't have front-end, if you feel comfortable using plain ruby it's fine (if you decide to use a framework the only allowed is Rails). 
+##Buyer Robot
+This robot will buy a random car, if there is stock in the Store. If there is no stock of the model, it will log the failed attempt in the 'log/buyer.log' file.
+If there is stock it will place an order with my DNI and name.
+It can also buy a random number of cars at a time. With a maximum of 10 cars each time.
 
 
+# "The Problem"
+To solve the stock management problem, I created an api for the Factory. It will return a random available car from the Warehouse, that matches the model id that is passed as a parameter.
+The api can be found in 'app/controllers/api/v1/factories_controller.rb'
+
+I extended the Buyer robot features to use the Factory api.
+So if the Store is out of stock of a certain model, using the api the Buyer robot will search if there is a car available in the Warehouse of the desired model.
+If the Warehouse is also out of stock it will simply log the failed attempt to buy a car. 
+But if there is stock in the factory, it will create a "Pending" order with the car that the api returned.
+
+I also extended the Guard robot to handle all the pending orders first, before transfering the ready to sell cars to the store.
+It will look for the pending orders and complete them marking the reserved cars as "sold".
+
+**To run this solution:**
+- Start the server so the api is running: rails server
+- Configure the Buyer task in the 'schedule.rb' file: rake buyer:buy_random_car_10tops_verify_factory
+- Configure the Guard task in the 'schedule.rb' file: rake guard:transfer_cars_pending_orders
 
 
+# "The Other Problem"
+To handle the exchanges in the orders, I created an "Exchanger" robot.
+
+It will help to set a request of exchange to the user. You can use the command: rake exchanger:request_an_exchange [oder_id] "[wanted_model_name]"
+With the order id and the wanted model name, it will place a new request of exchange.
+I created the ExchangeOrder model to list all the orders that need to be replaced.
+
+It also has a task to verify and process all the pending exchange requests. I set it to run every 5 minutes.
+If the Store has stock for the wanted model, the robot process the exchange and marks the request as completed. The old car gets back to the stock of the Store.
+If there is no stock, then the request is cancelled.
+Each order has a limit of exchanges that can be processed. If the limit of the order has been reached, then the exchange request is cancelled.
+
+**To run this solution:**
+- Place an exchange request: request_an_exchange [oder_id] "[wanted_model_name]"
+- Configure the Exchanger task in the 'schedule.rb' file: rake exchanger:verify_exchanges
 
 
+# "A plus"
+I created a Report robot to log the daily revenue, daily cars sold and daily average order value.
+Te report can be found as a log in the 'log/report.log' file
+
+**To run this solution:**
+- Run the following command: rake report:daily
 
 
+# Initializer Robot
+This robot is in charge to populate the Car Models table, so the project can run.
+It is set to run at the start of the day, after the reset of the database.
+To run it you can use the following command: 
+- rake initializer:destroy_factory
+- rake initializer:initialize_factory
 
 
+# Tests
+I used Rspec to create the unit tests of the models.
+To run them you can use the following command: rspec spec
 
+
+# Notes and Things to Improve
+I learned a lot with this project. This is the first time for me using Ruby on Rails and I think there are a few features that can be improved in this project:
+
+- **Improve Factory Api:** The api is going to return a random car from the warehouse that matches a model id. There is a probability that the provided car is already reserved by other pending order. We can improve the api so it returns only the 'non-reserved' cars.
+- **Use Environment Variables:** We could use environment variables to make the project "configurable". For example, we could configure the Parts types out of the Part model. Or we could configure the probability of a part to be defective (right now it is set as 1/50)
+- **Api for exchange orders:** Another take to solve the exchange orders problems is to implement an api in the store for the exchanges. It can be used for integrations in the future.
